@@ -5,7 +5,7 @@ class MulliganTester(ABC):
     def __init__(self):
         self.iterations = 100000
         self.starting_size = 7
-        self.mullto = 5
+        self.mullto = 4
         self.resetCounters()
 
     @property
@@ -176,6 +176,7 @@ class MulliganTester(ABC):
                         handIndex = i
             i += 1
         if best is None:
+            #used for limited
             handIndex = self.pickBestHandSubset()
             if handIndex is not None:
                 best = results[handIndex]
@@ -198,6 +199,7 @@ class MulliganTester(ABC):
                 size = self.starting_size - j
                 self.hand.new_hand(self.starting_size)
                 drawn = False
+                #if not testing the 7
                 if j > 0:
                     subResults = []
                     self.hand.generate_subset_hands(j)
@@ -373,15 +375,19 @@ class MulliganTester(ABC):
             self.writeHandTypesToFile(file, p_good_afterTS, p_hands_afterTS)
 
             file.write("\n")
-            file.write("p of good hand by 5\n")
+            file.write("p of good hand by " + str(self.mullto) + "\n")
             file.write(str(p_success) + "\n")
             file.write("p of improvement after draw\n")
-            file.write("7,6,5\n")
+            for size in range(7,self.mullto-1,-1):
+                file.write(str(size) + ",")
+            file.write("\n")
             file.write(str(p_drawImprovement) + "\n")
             file.write("p of good hand after draw\n")
             file.write(str(p_successAfterDraw) + "\n\n")
             file.write("Thoughtseize Probabilities\n")
-            file.write("7,6,5,Hurt Keepable Hand\n")
+            for size in range(7,self.mullto-1,-1):
+                file.write(str(size) + ",")
+            file.write("Hurt Keepable Hand\n")
             file.write(str(p_TS_hurt) + "\n")
             file.write("Broke Keepable Hand\n")
             file.write(str(p_TS_broke) + "\n")
