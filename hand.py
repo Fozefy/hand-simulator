@@ -1,6 +1,7 @@
 import numpy as np
 from collections import Counter
 import scipy.stats as sps
+import itertools
 
 
 class Hand:
@@ -68,25 +69,20 @@ class Hand:
         self.size = sum(self.card_counts.values())
 
     def generate_subset_hands(self, numHide, noRemoveList = []):
-        if numHide > 2:
-            raise Exception('not implemented for more than 2')
         self.origHand = self.card_counts.copy()
         counterAsList = sorted(self.card_counts.elements())
-        self.subsetHands = []
-        for i in range(0, self.size):
-            if counterAsList[i] in noRemoveList:
-                continue
 
-            subHand = counterAsList[:i] + counterAsList[i+1:]
-            if numHide > 1:
-                for j in range(i, self.size-1):
-                    if counterAsList[i] in noRemoveList:
-                        continue
-                    subsubHand = subHand[:j] + subHand[j+1:]
-                    self.subsetHands.append(subsubHand)
-            else:
-                self.subsetHands.append(subHand)
+        handSubsets = list(itertools.combinations(counterAsList, self.size - numHide))
 
+        def equalNumberOfNotToBeRemovedCards(subsetHand, noRemoveList):
+            handCount = Counter(subsetHand)
+            for cardNameToNotBeRemoved in noRemoveList:
+                #if the number of cardName in the subset hand is less than the original hand
+                if(self.origHand[cardNameToNotBeRemoved] != handCount[cardNameToNotBeRemoved]):
+                    return False
+            return True
+
+        self.subsetHands = [x for x in handSubsets if equalNumberOfNotToBeRemovedCards(x, noRemoveList)]
         self.num_subsets = len(self.subsetHands)
         self.subsetIndex = -1
         self.size = self.size - numHide
