@@ -52,9 +52,6 @@ class Hand:
     def get_decklist(self):
         return dict(self.decklist.copy())
 
-    def num_subets(self):
-        return self.num_subsets
-
     def chooseSubset(self, index):
         self.subsetIndex = index
         if index is None:

@@ -33,20 +33,21 @@ def test_new_hand():
 def test_generate_subset_hands():
     hand = h.Hand("tests/testdeck.txt")
     assert hand.size == 0
-    assert hand.num_subets() == 0
+    assert hand.num_subsets == 0
+    hand.new_hand(1)
     hand.generate_subset_hands(1)
-    assert hand.size < 0
-    assert hand.num_subets() == 0
+    assert hand.size == 0
+    assert hand.num_subsets == 1
 
     hand.new_hand(7)
     hand.generate_subset_hands(1)
     assert hand.size == 6
-    assert hand.num_subets() == 7
+    assert hand.num_subsets == 7
 
     hand.new_hand(7)
     hand.generate_subset_hands(2)
     assert hand.size == 5
-    assert hand.num_subets() == 21
+    assert hand.num_subsets == 21
 
 def test_set_hand():
     hand = h.Hand("tests/testdeck.txt")
