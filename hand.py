@@ -6,11 +6,15 @@ import scipy.stats as sps
 class Hand:
     def __init__(self, deck_name):
         self.deck_name = deck_name
+        self.num_subsets = 0
+        self.subsetIndex = -1
+        self.subsetHands = None
         if deck_name:
             self.deck, self.decklist = self.process(deck_name)
         else:
             self.deck = ["Storm Crow"] * 60
             self.decklist = dict(Counter(self.deck))
+        self.new_hand(0) #init hand vars
 
     def hand_as_str(self):
         return str(self.card_counts)
@@ -95,15 +99,27 @@ class Hand:
         self.draw_card()
         self.size += -1 #Set size after so we don't redraw this card
 
+    def select_random_remaining(self):
+        deckSize = len(self.deck)
+        if (deckSize <= self.size):
+            raise Exception("The deck is empty.")
+
+        remainingDeck = [i for i in range(deckSize) if i not in self.draws]
+        return np.random.choice(remainingDeck)
+
     def draw_card(self, choice = None):
         if choice is None:
-            choice = np.random.choice(len(self.deck) - self.size, 1)[0]
+            choice = self.select_random_remaining()
+        elif choice in self.draws:
+            raise Exception("Chosen card already drawn.")
 
-            if choice in self.draws:
-                choice = len(self.deck) - len(self.draws) + np.where(self.draws==choice)[0][0]
-            
-            self.draws = np.append(self.draws, choice)
+        self.draws = np.append(self.draws, choice)
         
+        self.add_card_to_cur_hand(choice)
+
+        return choice
+
+    def add_card_to_cur_hand(self, choice):
         self.lastDraw = self.deck[choice]
         self.card_counts[self.lastDraw] += 1
         self.cards = set(self.card_counts.keys())

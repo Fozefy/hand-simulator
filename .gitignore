@@ -6,3 +6,5 @@ old/*
 venv/*
 .vscode/*
 output/backup/*
+.vs/*
+TestResults/*

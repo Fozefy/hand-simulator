@@ -212,13 +212,13 @@ class MulliganTester(ABC):
                         drawnCard = self.hand.draw_card()
                         for k in range(0, self.hand.num_subsets):
                             self.hand.nextSubset()
-                            self.hand.draw_card(drawnCard)
+                            self.hand.add_card_to_cur_hand(drawnCard)
                             subAfterDrawResults.append(self.CheckHand())
                         bestIndex = self.getBestResult(subAfterDrawResults)
                         if bestIndex is None:
                             bestIndex = 0
                         self.hand.chooseSubset(bestIndex)
-                        self.hand.draw_card(drawnCard)
+                        self.hand.add_card_to_cur_hand(drawnCard)
                         results = subResults[bestIndex]
                     else:
                         self.hand.chooseSubset(bestIndex)
